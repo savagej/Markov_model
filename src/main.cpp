@@ -5,18 +5,16 @@
 int numrow = 256;
 
 int main() {
-  double** mat = load_matrix("distances.txt", numrow, numrow+1, 1);
+  Arrays* mat = load_matrix("distances.txt", numrow, numrow+1, 1);
+  double ** output = mat->two_dim;
 
-  double array[numrow][numrow];
-  double oxygens[numrow];
   for (int ii = 0; ii < numrow; ii++) {
-    oxygens[ii] = mat[ii][0];    
-    for (int jj = 1; jj < numrow+1; jj++) {
-      array[ii][jj-1] = mat[ii][jj];
+    for (int jj = 0; jj < numrow; jj++) {
+      printf ("%g",output[ii][jj]);
     }
     printf("\n");
   }
-  free(mat);
+  //free(mat);
   return 0;
 }
 

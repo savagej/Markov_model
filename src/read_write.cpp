@@ -1,8 +1,9 @@
 #include <iostream>
 #include <stdlib.h>
+#include "read_write.h"
 
 
-double** load_matrix(char* filename, unsigned int nrow, unsigned int ncol, unsigned int skip) {
+Arrays* load_matrix(char* filename, unsigned int nrow, unsigned int ncol, unsigned int skip) {
 
   FILE *mfile;
   mfile = fopen(filename, "r");
@@ -38,7 +39,24 @@ double** load_matrix(char* filename, unsigned int nrow, unsigned int ncol, unsig
     }
 
     fclose(mfile);
-    return matrix;
+
+    double **array =  (double**) malloc(sizeof(double*) * nrow);
+    for (int ii = 0; ii < nrow; ii++) {
+      array[ii] = (double*) malloc(sizeof(double) * ncol);
+    }
+    double *oxygens = (double*) malloc(sizeof(double) * ncol);
+
+    for (int ii = 0; ii < nrow; ii++) {
+      oxygens[ii] = matrix[ii][0];    
+      for (int jj = 1; jj < nrow+1; jj++) {
+        array[ii][jj-1] = matrix[ii][jj];
+      }
+    }
+    Arrays* test = (Arrays*) malloc(sizeof(Arrays));
+    test->oxygens = oxygens;
+    test->two_dim = array;
+
+    return test;
     
   }else {
     perror("Could not open file\n");
@@ -46,20 +64,4 @@ double** load_matrix(char* filename, unsigned int nrow, unsigned int ncol, unsig
 
   return NULL;
 
-}
-
-
-double** build_matrix(int nrow) {
-  //double matrix[nrow][nrow];
-  double** matrix;
-  matrix = (double**) malloc(nrow*sizeof(double*));
-  for (int ii = 0; ii < nrow; ii++) {
-    matrix[ii] = (double*) malloc(nrow*sizeof(double));
-  }
-  for (int ii = 0; ii < nrow; ii++) {
-    for (int jj = 0; jj < nrow; jj++) {
-      matrix[ii][jj] = rand();
-    }
-  }
-  return matrix;
 }
