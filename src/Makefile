@@ -1,7 +1,7 @@
 CC=g++
 CFLAGS=-c -Wall
 LDFLAGS=
-SOURCES=main.cpp read_write.cpp
+SOURCES=main.cpp read_write.cpp run_markov.cpp
 OBJECTS=$(SOURCES:.cpp=.o)
 EXECUTABLE=markov
 
