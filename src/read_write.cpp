@@ -1,7 +1,9 @@
 #include <iostream>
-#include <stdlib.h>
+#include <fstream>
+//#include <stdlib.h>
 #include "read_write.h"
 
+using namespace std;
 
 Arrays* load_matrix(char* filename, unsigned int nrow, unsigned int ncol, unsigned int skip) {
 
@@ -64,4 +66,21 @@ Arrays* load_matrix(char* filename, unsigned int nrow, unsigned int ncol, unsign
 
   return NULL;
 
+};
+
+void print_matrix(char* filename, unsigned int nrow, unsigned int ncol, unsigned int time, double** matrix) {
+
+  ofstream myfile;
+  myfile.open (filename,ios::app);
+  myfile << "TIMESTEP " << time << "\n";
+
+  unsigned int i, j;
+  for(i = 0; i < nrow; i++) {
+    for(j = 0; j < ncol; j++) {
+      myfile << matrix[i][j] << " ";
+    }  
+    myfile << "\n";
+  }
+
+  myfile.close();
 }
