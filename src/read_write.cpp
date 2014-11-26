@@ -5,7 +5,7 @@
 
 using namespace std;
 
-Arrays* load_matrix(char* filename, unsigned int nrow, unsigned int ncol, unsigned int skip) {
+Arrays* load_matrix(char* filename, unsigned int nrow, unsigned int ncol, unsigned int get_oxygens) {
 
   FILE *mfile;
   mfile = fopen(filename, "r");
@@ -14,10 +14,8 @@ Arrays* load_matrix(char* filename, unsigned int nrow, unsigned int ncol, unsign
     int c;
     unsigned int i, j;
 
-    if(skip > 0) {
-      for(i = 0; i < skip; i++) {
-        while((c = getc(mfile)) != '\n' && c != EOF);
-      }
+    for(i = 0; i < 1; i++) { // skip header
+      while((c = getc(mfile)) != '\n' && c != EOF);
     }
 
     double **matrix =  (double**) malloc(sizeof(double*) * nrow);
@@ -41,22 +39,25 @@ Arrays* load_matrix(char* filename, unsigned int nrow, unsigned int ncol, unsign
     }
 
     fclose(mfile);
-
-    double **array =  (double**) malloc(sizeof(double*) * nrow);
-    for (int ii = 0; ii < nrow; ii++) {
-      array[ii] = (double*) malloc(sizeof(double) * ncol);
-    }
-    double *oxygens = (double*) malloc(sizeof(double) * ncol);
-
-    for (int ii = 0; ii < nrow; ii++) {
-      oxygens[ii] = matrix[ii][0];    
-      for (int jj = 1; jj < nrow+1; jj++) {
-        array[ii][jj-1] = matrix[ii][jj];
-      }
-    }
     Arrays* test = (Arrays*) malloc(sizeof(Arrays));
-    test->oxygens = oxygens;
-    test->two_dim = array;
+    if (get_oxygens == 1) {
+      double **array =  (double**) malloc(sizeof(double*) * nrow);
+      for (int ii = 0; ii < nrow; ii++) {
+        array[ii] = (double*) malloc(sizeof(double) * ncol);
+      }
+      double *oxygens = (double*) malloc(sizeof(double) * ncol);
+  
+      for (int ii = 0; ii < nrow; ii++) {
+        oxygens[ii] = matrix[ii][0];    
+        for (int jj = 1; jj < nrow+1; jj++) {
+          array[ii][jj-1] = matrix[ii][jj];
+        }
+      }
+      test->oxygens = oxygens;
+      test->two_dim = array;
+    } else {
+      test-> two_dim = matrix;
+    }
 
     return test;
     
@@ -84,3 +85,19 @@ void print_matrix(char* filename, unsigned int nrow, unsigned int ncol, unsigned
 
   myfile.close();
 }
+
+void print_header(char* filename, unsigned int nrow, double* matrix) {
+  ofstream myfile;
+  myfile.open (filename,ios::out);
+  myfile << "#oxygens ";
+
+  unsigned int i;
+  for(i = 0; i < nrow; i++) {
+      myfile << matrix[i] << " ";
+  }
+  myfile << "\n";
+
+  myfile.close();
+}
+
+

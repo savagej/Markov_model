@@ -8,30 +8,38 @@ using namespace std;
 void run_markov(double** dist,double** adj,unsigned int nrow, unsigned int ncol) {
   for (int ii = 0; ii < nrow; ii++) {
     for (int jj = ii+1; jj < ncol; jj++) {
+      // If a h-bond exists
       if (adj[ii][jj] != 0) {
         double prob[ncol];
         double total_prob = 0;
+        // find the probability of each neighboring bond
         for (int kk = 0; kk < ncol; kk++) {
-          if (kk == jj) {
-            prob[kk] = exp(-dist[ii][kk]);
-            total_prob += prob[kk];
-          } else if (adj[ii][kk] != 0) {
-            prob[kk] = exp(-dist[ii][kk]);
-            total_prob += prob[kk];
+          if (adj[ii][kk] != 0) {
+            if (dist[ii][kk] < 3.5) {
+              prob[kk] = exp(-dist[ii][kk]);
+              //cerr << ii << " " << jj << " " << kk << " " << prob[kk] << " probability : dist " << dist[ii][kk] << " adj " << adj[ii][kk] <<"\n";
+              total_prob += prob[kk];
+            } else {
+              prob[kk] = 0;
+            }
           } else {
             prob[kk] = 0;
           }
         }
+        if (total_prob == 0) 
+          continue;
         double choice = (double) rand() /RAND_MAX * total_prob;
-        total_prob = 0;
         int kk = 0;
+        total_prob = prob[0];
         while (total_prob < choice) {
-          total_prob += prob[kk];
           kk ++;
+          total_prob += prob[kk];
         }
-        double buffer = adj[ii][jj];
-        adj[ii][jj] = 0;
-        adj[ii][kk] = buffer;
+        if (kk != jj) {
+          //cerr << kk << " to " << jj << " changed: " << dist[ii][kk] << " " << dist[ii][jj] << "probs:: " << choice << " " << total_prob <<"\n";
+          adj[ii][kk] = adj[ii][jj];
+          adj[ii][jj] = 0;
+        }
       }
     }
   }

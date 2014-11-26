@@ -4,3 +4,4 @@ typedef struct {
 } Arrays;
 Arrays* load_matrix(char* filename, unsigned int nrow, unsigned int ncol, unsigned int skip);
 void print_matrix(char* filename, unsigned int nrow, unsigned int ncol, unsigned int time, double** matrix);
+void print_header(char* filename, unsigned int nrow, double* matrix);

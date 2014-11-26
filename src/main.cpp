@@ -8,15 +8,16 @@ int times = 10000;
 
 int main(int argc, char *argv[]) {
   Arrays* distances = load_matrix(argv[1], numrow, numrow+1, 1);
-  Arrays* adjacencies = load_matrix(argv[2], numrow, numrow+1, 1);
+  Arrays* adjacencies = load_matrix(argv[2], numrow, numrow, 0);
 
   double **distance = distances->two_dim;
   double **adjacancy = adjacencies->two_dim;
+  print_header(argv[3],numrow,distances->oxygens);
 
-  for (int ii = 0; ii < times; ii++) {
-    fprintf(stderr,"%d\r",ii);
+  for (int tt = 0; tt < times; tt++) {
+    fprintf(stderr,"time %d\n",tt);
     run_markov(distance,adjacancy, numrow, numrow);
-    print_matrix(argv[3], numrow, numrow, ii, adjacancy);
+    print_matrix(argv[3], numrow, numrow, tt, adjacancy);
   }
 
   free(distances);
